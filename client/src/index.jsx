@@ -8,21 +8,23 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
-  RouterProvider
-} from 'react-router-dom'
+  RouterProvider,
+} from "react-router-dom";
 
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 //TODO: REPLACE WITH YOUR OWN CLIENT_ID
-const GOOGLE_CLIENT_ID = "FILL ME IN";
+const GOOGLE_CLIENT_ID = "453302824512-914u9ln0fsf2jp3imatgmflarsv01qjh.apps.googleusercontent.com";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route errorElement={<NotFound />} element={<App />}>
-      <Route path="/" element={<Skeleton />}/>
+      <Route path="/" element={<Skeleton />} />
+      <Route path="/games/:gameId" element={<GameMenu />} />
+      <Route path="/game/:gameId" element={<Game />} />
     </Route>
   )
-)
+);
 
 // renders React Component "Root" into the DOM element with ID "root"
 ReactDOM.createRoot(document.getElementById("root")).render(

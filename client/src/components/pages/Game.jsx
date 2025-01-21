@@ -2,16 +2,11 @@ import React, { useContext } from "react";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
 
 import "../../utilities.css";
-import "./Skeleton.css";
+import "./Game.css";
 import { UserContext } from "../App";
 
-const Skeleton = () => {
+const Game = (props) => {
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
-
-  const gameMenu = () => {
-    const gameId = Math.floor(Math.random() * 1000);
-    useNavigate(`/games/${gameId}`);
-  };
 
   return (
     <>
@@ -27,7 +22,6 @@ const Skeleton = () => {
       ) : (
         <GoogleLogin onSuccess={handleLogin} onError={(err) => console.log(err)} />
       )}
-      <button onClick={gameMenu}> Create Game</button>
       <h1>Good luck on your project :)</h1>
       <h2> What you need to change in this skeleton</h2>
       <ul>
@@ -50,4 +44,4 @@ const Skeleton = () => {
   );
 };
 
-export default Skeleton;
+export default Game;

@@ -9,6 +9,8 @@ import { socket } from "../client-socket";
 
 import { get, post } from "../utilities";
 
+import "./App.css";
+
 export const UserContext = createContext(null);
 
 /**

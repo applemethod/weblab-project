@@ -21,24 +21,35 @@ const router = express.Router();
 //initialize socket
 const socketManager = require("./server-socket");
 
+// router.post("/login", auth.login);
+const jwt = require("jsonwebtoken");
+
 router.post("/login", async (req, res) => {
   const { token } = req.body;
 
-  try {
-    // Verify the Google token
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: "453302824512-914u9ln0fsf2jp3imatgmflarsv01qjh.apps.googleusercontent.com",
-    });
+  console.log("Received token:", token);
 
-    const payload = ticket.getPayload();
-    const { sub: googleId, email, name } = payload;
+  try {
+    // Decode the token
+    const decodedToken = jwt.decode(token);
+
+    if (!decodedToken) {
+      return res.status(400).json({ error: "Invalid token" });
+    }
+
+    const googleId = decodedToken.sub; // Google unique user ID
+    const email = decodedToken.email;
+    const name = decodedToken.name;
+
+    console.log("Decoded user info:", { googleId, email, name });
 
     // Check if the user exists in the database
     let user = await User.findOne({ googleId });
+
     if (!user) {
       // Create a new user if they don't exist
       user = new User({ googleId, email, username: name });
+      console.log("Created new user:", user);
       await user.save();
     } else {
       // Optionally update user information if necessary
@@ -49,8 +60,8 @@ router.post("/login", async (req, res) => {
 
     res.status(200).json(user); // Return the user object to the frontend
   } catch (error) {
-    console.error("Error verifying token:", error);
-    res.status(401).json({ error: "Invalid token" });
+    console.error("Error handling login:", error.message);
+    res.status(500).json({ error: "Internal server error." });
   }
 });
 
@@ -74,7 +85,7 @@ router.post("/update-username", async (req, res) => {
     }
 
     // Find the user by ID and update their username
-    const user = await User.findOne({ googleId: userId });
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found." });
     }
@@ -92,21 +103,20 @@ router.post("/update-username", async (req, res) => {
 router.get("/user/:userId", async (req, res) => {
   const { userId } = req.params;
 
+  console.log("Fetching user for ID:", userId); // Log the ID received
+
   try {
-    // Find the user in the database by their ID
-    const user = await User.findOne({ googleId: userId });
+    const user = await User.findById(userId);
+    console.log("Database query result:", user); // Log the query result
 
     if (!user) {
+      console.log("User not found");
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Return the username and email
-    res.status(200).json({
-      username: user.username,
-      email: user.email,
-    });
+    res.status(200).json(user);
   } catch (error) {
-    console.error("Error fetching user:", error);
+    console.error("Error fetching user:", error.message);
     res.status(500).json({ error: "An error occurred while fetching the user." });
   }
 });

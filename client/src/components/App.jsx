@@ -9,8 +9,6 @@ import { socket } from "../client-socket";
 
 import { get, post } from "../utilities";
 
-import "./App.css";
-
 export const UserContext = createContext(null);
 
 /**
@@ -21,9 +19,8 @@ const App = () => {
 
   useEffect(() => {
     get("/api/whoami").then((user) => {
-      console.log(`User logged in: ${user.username} (${user.email})`);
       if (user._id) {
-        // they are registered in the database, and currently logged in.
+        // they are registed in the database, and currently logged in.
         setUserId(user._id);
       }
     });

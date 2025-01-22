@@ -1,0 +1,20 @@
+.chat-container {
+  width: 400px; /* Width of the rectangle */
+  height: 800px; /* Height of the rectangle */
+  background-color: white; /* Default background color */
+  border: 1px solid #ccc; /* Optional: Add a border */
+  text-align: center; /* Center text horizontally */
+  line-height: 100px; /* Center text vertically */
+  border-radius: 5px; /* Optional: Rounded corners */
+  transition: background-color 0.3s ease; /* Smooth color transition */
+}
+
+.chat-bar {
+  width: 350px; /* Width of the rectangle */
+  height: 40px; /* Height of the rectangle */
+  background-color: white; /* Default background color */
+  text-align: center; /* Center text horizontally */
+  line-height: 100px; /* Center text vertically */
+  border-radius: 5px; /* Optional: Rounded corners */
+  transition: background-color 0.3s ease; /* Smooth color transition */
+}

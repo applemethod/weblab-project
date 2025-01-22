@@ -19,7 +19,7 @@ const NavBar = (props) => {
       <div className="profile">
         {userId ? (
           <>
-            <ProfileIcon />
+            <ProfileIcon userId={userId} />
             <button
               onClick={() => {
                 googleLogout();

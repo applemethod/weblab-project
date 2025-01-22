@@ -1,23 +1,30 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
-import { Link } from "react-router-dom";
 
 import "../../utilities.css";
 import "./ProfileIcon.css";
+import { get, post } from "../../utilities";
 import CryptoJS from "crypto-js";
 import { UserContext } from "../App";
 
-const ProfileIcon = () => {
-  const { userId, handleLogin, handleLogout } = useContext(UserContext);
+const ProfileIcon = (props) => {
+  const userId = props.userId;
 
   const [userInfo, setUserInfo] = useState(null);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/profile/${userId}`);
+  };
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await axios.get(`/api/user/${userId}`);
-        setUserInfo(response.data); // Set user info in state
+        const response = await get(`/api/user/${userId}`);
+        console.log("Received user info:", response);
+        setUserInfo(response); // Set user info in state
       } catch (err) {
         console.error("Error fetching user info:", err);
         setError("Failed to fetch user information.");
@@ -42,10 +49,10 @@ const ProfileIcon = () => {
 
   return (
     <>
-      <div className="profile-container">
+      <button className="profile-container" onClick={handleClick}>
         <img src={profilePicture} alt="Profile" />
         <div className="profile-name">{userInfo.username}</div>
-      </div>
+      </button>
     </>
   );
 };

@@ -13,6 +13,15 @@
   background-color: steelblue; /* Darker shade on hover */
 }
 
-.profile-name {
-  font-weight: bold; /* Make the name bold */
+.profile-container img,
+.profile-container .profile-name {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.profile-container img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
 }

@@ -1,0 +1,14 @@
+.newgame-container {
+  display: flex;
+  justify-content: center;
+}
+
+.creategame {
+  display: inline-block;
+  padding: 20px 40px;
+  text-decoration: none;
+  background-color: blue;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+}

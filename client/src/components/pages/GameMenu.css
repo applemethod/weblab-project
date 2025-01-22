@@ -1,1 +1,121 @@
 /* Fill me in :) */
+.gamemenu-container {
+  display: flex;
+  justify-content: space-between; /* Position children on the left and right */
+  align-items: center; /* Align blocks vertically (optional) */
+  padding: 100px;
+}
+
+.player-container {
+  width: 700px;
+  height: 600px;
+  background-color: lightgray; /* Shaded rectangle */
+  position: relative; /* Enables positioning for child elements */
+  border-radius: 20px; /* Optional: Rounded corners */
+}
+
+.settings {
+  width: 700px;
+  height: 600px;
+  background-color: lightgray; /* Shaded rectangle */
+  position: relative; /* Enables positioning for child elements */
+  border-radius: 20px; /* Optional: Rounded corners */
+}
+
+.settings-header {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.slider-container {
+  padding: 20px;
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 300px;
+  height: 10px;
+  background: linear-gradient(to right, #007bff, #ccc);
+  border-radius: 5px;
+  outline: none;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slider-label {
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
+}
+
+.slider-label span {
+  white-space: nowrap;
+  font-size: 14px; /* Optional: Adjust label size */
+}
+
+.slider2 {
+  width: 300px;
+  margin: 10px auto;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 10px;
+  background: linear-gradient(to right, #007bff, #ccc);
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+}
+
+.slider2:hover {
+  opacity: 0.9;
+}
+
+.slider2::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slider2::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slider2-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
+}
+
+.slider2-labels span {
+  font-size: 14px;
+}

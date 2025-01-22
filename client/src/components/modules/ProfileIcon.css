@@ -1,0 +1,18 @@
+.profile-container {
+  width: 200px; /* Width of the rectangle */
+  height: 100px; /* Height of the rectangle */
+  background-color: lightblue; /* Default background color */
+  border: 1px solid #ccc; /* Optional: Add a border */
+  text-align: center; /* Center text horizontally */
+  line-height: 100px; /* Center text vertically */
+  border-radius: 5px; /* Optional: Rounded corners */
+  transition: background-color 0.3s ease; /* Smooth color transition */
+}
+
+.profile-container:hover {
+  background-color: steelblue; /* Darker shade on hover */
+}
+
+.profile-name {
+  font-weight: bold; /* Make the name bold */
+}

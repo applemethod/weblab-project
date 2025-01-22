@@ -1,0 +1,68 @@
+.joingame-container {
+  display: flex;
+  justify-content: center;
+}
+
+.creategame {
+  display: inline-block;
+  padding: 20px 40px;
+  text-decoration: none;
+  background-color: blue;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+}
+
+/* Container for search button and input */
+.search-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Search button styles */
+.search-button {
+  height: 40px;
+  width: 40px;
+  background-color: blue;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: darkblue;
+}
+
+/* Search box styles */
+.search-box {
+  width: 0;
+  opacity: 0;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 0 10px;
+  margin-left: 10px;
+  transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+@keyframes expand {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 200px;
+    opacity: 1;
+  }
+}
+
+.search-box.expanded {
+  animation: expand 0.3s ease forwards;
+}

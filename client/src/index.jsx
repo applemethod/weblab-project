@@ -2,6 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./components/App";
 import Skeleton from "./components/pages/Skeleton";
+import GameMenu from "./components/pages/GameMenu";
+import Game from "./components/pages/Game";
+import Profile from "./components/pages/Profile";
 import NotFound from "./components/pages/NotFound";
 
 import {
@@ -22,6 +25,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<Skeleton />} />
       <Route path="/games/:gameId" element={<GameMenu />} />
       <Route path="/game/:gameId" element={<Game />} />
+      <Route path="/profile/:userId" element={<Profile />} />
     </Route>
   )
 );

@@ -1,1 +1,4 @@
-/* Fill me in :) */
+.container {
+  display: flex;
+  justify-content: center;
+}

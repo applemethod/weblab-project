@@ -11,6 +11,8 @@ const express = require("express");
 
 // import models so we can interact with the database
 const User = require("./models/user");
+// const Game = require("./models/game");
+// const Room = require("./models/room");
 
 // import authentication library
 const auth = require("./auth");
@@ -120,6 +122,86 @@ router.get("/user/:userId", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching the user." });
   }
 });
+
+// router.post("newroom/:gameId", async (req, res) => {
+//   const { userId } = req.params;
+
+//   try {
+//     const user = await Room.findById(userId);
+//     if (!user) {
+//       console.log("User not found");
+//       return res.status(404).json({ error: "User not found" });
+//     } else {
+//       user.room = req.body.room;
+//       await user.save();
+//       res.status(200).json(user);
+//     }
+//   } catch (error) {
+//     console.error("Error fetching user:", error.message);
+//     res.status(500).json({ error: "An error occurred while fetching the user." });
+//   }
+// });
+
+// router.post("/newgame", async (req, res) => {
+//   const { game } = req.body;
+
+//   console.log("Received game:", game);
+
+//   try {
+//     let oldgame = await Game.findOne({ gameId: game.gameId });
+//     if (!oldgame) {
+//       const newGame = new Game(game);
+//       await newGame.save();
+//       res.status(201).json(newGame);
+//     } else {
+//       oldgame = game;
+//       await oldgame.save();
+//       res.status(200).json(oldgame);
+//     }
+//   } catch (error) {
+//     console.error("Error creating game:", error.message);
+//     res.status(500).json({ error: "An error occurred while creating the game." });
+//   }
+// });
+
+// router.post("/endgame/:gamdId", async (req, res) => {
+//   const { gameId } = req.params;
+
+//   try {
+//     const game = await Game.findOne({ gameId });
+
+//     if (!game) {
+//       console.log("Game not found");
+//       return res.status(404).json({ error: "Game not found" });
+//     }
+
+//     game.status = "ended";
+//   } catch (error) {
+//     console.error("Error fetching game:", error.message);
+//     res.status(500).json({ error: "An error occurred while fetching the game." });
+//   }
+// });
+
+// router.get("/gameinfo/:gameId", async (req, res) => {
+//   const { gameId } = req.params;
+
+//   console.log("Fetching game for ID:", gameId); // Log the ID received
+
+//   try {
+//     const game = await User.findOne({ gameId });
+//     console.log("Database query result:", user); // Log the query result
+
+//     if (!game) {
+//       console.log("Game not found");
+//       return res.status(404).json({ error: "Game not found" });
+//     }
+
+//     res.status(200).json(game);
+//   } catch (error) {
+//     console.error("Error fetching user:", error.message);
+//     res.status(500).json({ error: "An error occurred while fetching the user." });
+//   }
+// });
 
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in

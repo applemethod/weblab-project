@@ -1,27 +1,103 @@
-import React, { useContext } from "react";
-import { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
-
 import "../../utilities.css";
 import "./GameMenu.css";
 import NavBar from "../modules/NavBar";
+import ProfileIcon from "../modules/ProfileIcon";
 import { UserContext } from "../App";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:5173"); // Connect to the backend
 
 const levels = ["Easy", "Medium", "Hard"];
 
 const GameMenu = () => {
-  const { userId, handleLogin, handleLogout } = useContext(UserContext);
+  const { userId } = useContext(UserContext);
   const [time, setTime] = useState(30);
   const [increment, setIncrement] = useState(0);
   const [levelIndex, setLevelIndex] = useState(0);
+  const [leader, setLeader] = useState(null);
+  const [players, setPlayers] = useState([]); // State for the list of players
   const gameId = useParams().gameId;
+  const navigate = useNavigate();
+
+  // Join the room and handle updates
+  useEffect(() => {
+    if (!userId) return;
+
+    // Join the room
+    socket.emit("join_room", {
+      roomId: gameId,
+      user: userId,
+    });
+
+    // Listen for player updates
+    socket.on("update_players", (room) => {
+      if (room && room.players) {
+        setLeader(room.leader);
+        setPlayers(room.players); // Update the list of players
+        setTime(room.settings.time); // Sync time
+        setIncrement(room.settings.increment); // Sync increment
+        setLevelIndex(room.settings.levelIndex); // Sync level
+      }
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      socket.emit("leave_room", { roomId: gameId });
+      socket.off("update_players");
+    };
+  }, [userId, gameId]);
+
+  // Emit time change
+  const handleTimeChange = (value) => {
+    setTime(value);
+    socket.emit("change_time", { roomId: gameId, time: value });
+  };
+
+  // Emit increment change
+  const handleIncrementChange = (value) => {
+    setIncrement(value);
+    socket.emit("change_increment", { roomId: gameId, increment: value });
+  };
+
+  // Emit difficulty level change
+  const handleLevelChange = (value) => {
+    setLevelIndex(value);
+    socket.emit("change_level", { roomId: gameId, levelIndex: value });
+  };
 
   return (
     <>
       <NavBar />
       <div className="gamemenu-container">
-        <div className="player-container">{/* get a list of the players and display them*/}</div>
+        <div className="player-container">
+          <h1>Players in Room</h1>
+          <ul>
+            {players.map((playerId) => {
+              if (playerId === leader) {
+                return (
+                  <>
+                    <p>Leader: </p>
+                    <ProfileIcon userId={playerId} />
+                  </>
+                );
+              } else {
+                return <ProfileIcon userId={playerId} />;
+              }
+            })}
+          </ul>
+          <button
+            onClick={() => {
+              socket.emit("start_game", { roomId: gameId });
+            }}
+            className="start-button"
+          >
+            Start
+          </button>
+        </div>
 
         <div className="settings">
           <div className="settings-header">
@@ -34,7 +110,7 @@ const GameMenu = () => {
               min="0"
               max="60"
               value={time}
-              onChange={(e) => setTime(e.target.value)}
+              onChange={(e) => handleTimeChange(e.target.value)}
               className="slider"
             />
             <div className="slider-label">
@@ -45,12 +121,13 @@ const GameMenu = () => {
             <p>Selected Time: {time} minutes</p>
           </div>
           <div className="slider-container">
+            <h2>Increment</h2>
             <input
               type="range"
               min="0"
               max="30"
               value={increment}
-              onChange={(e) => setIncrement(e.target.value)}
+              onChange={(e) => handleIncrementChange(e.target.value)}
               className="slider"
             />
             <div className="slider-label">
@@ -61,13 +138,14 @@ const GameMenu = () => {
             <p>Selected Increment: {increment} seconds</p>
           </div>
           <div className="slider-container">
+            <h2>Difficulty</h2>
             <input
               type="range"
               min="0"
               max={levels.length - 1} // Match slider range to number of levels
               step="1" // Ensure discrete steps
               value={levelIndex} // Controlled value
-              onChange={(e) => setLevelIndex(e.target.value)}
+              onChange={(e) => handleLevelChange(e.target.value)}
               className="slider2"
             />
             <div className="slider2-labels">

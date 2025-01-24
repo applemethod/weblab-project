@@ -27,11 +27,11 @@ const removeUser = (user, socket) => {
   delete socketToUserMap[socket.id];
 };
 
-// Room Management
-const addToRoom = (roomId, userId) => {
+const createRoom = (roomId) => {
   if (!rooms[roomId]) {
+    console.log("Creating room: " + roomId);
     rooms[roomId] = {
-      leader: userId,
+      leader: null,
       players: [],
       settings: {
         maxPlayers: 4,
@@ -43,12 +43,21 @@ const addToRoom = (roomId, userId) => {
         started: false,
         chat: [],
       },
-    }; // Create room if it doesn't exist
+    };
   }
+};
+
+// Room Management
+const addToRoom = (roomId, userId) => {
+  createRoom(roomId);
 
   if (rooms[roomId].players.length >= rooms[roomId].settings.maxPlayers) {
     console.log("Room is full");
     return;
+  }
+
+  if (!rooms[roomId].leader) {
+    rooms[roomId].leader = userId;
   }
 
   rooms[roomId].players.push(userId); // Add user to the room
@@ -57,10 +66,10 @@ const addToRoom = (roomId, userId) => {
 const removeFromRoom = (roomId, userId) => {
   if (rooms[roomId]) {
     rooms[roomId].players = rooms[roomId].players.filter((playerId) => playerId !== userId); // Remove user from room
-    if (rooms[roomId].players.length === 0) {
-      delete rooms[roomId]; // Delete room if it's empty
-    } else if (rooms[roomId].leader === userId) {
-      rooms[roomId].leader = rooms[roomId].players[0];
+    if (rooms[roomId].players.length !== 0) {
+      if (rooms[roomId].leader === userId) {
+        rooms[roomId].leader = rooms[roomId].players[0];
+      }
     }
   }
 };
@@ -95,6 +104,20 @@ module.exports = {
 
     io.on("connection", (socket) => {
       console.log(`Socket connected: ${socket.id}`);
+
+      socket.on("create_room", ({ roomId }) => {
+        createRoom(roomId);
+        socket.emit("room_created", { roomId });
+      });
+
+      socket.on("maintain_rooms", ({ roomId }) => {
+        if (rooms[roomId]) {
+          if (rooms[roomId].players.length === 0) {
+            console.log("Room deleted: " + roomId);
+            delete rooms[roomId];
+          }
+        }
+      });
 
       // Handle user joining a room
       socket.on("join_room", ({ roomId, user }) => {
@@ -140,15 +163,18 @@ module.exports = {
 
       socket.on("change_time", ({ roomId, time }) => {
         changeTime(roomId, time);
+        io.to(roomId).emit("update_players", { roomId, time });
       });
 
       socket.on("change_increment", ({ roomId, increment }) => {
         changeIncrement(roomId, increment);
+        io.to(roomId).emit("update_players", { roomId, time });
       });
 
       socket.on("start_game", ({ roomId }) => {
         if (rooms[roomId]) {
           rooms[roomId].game.started = true;
+          io.to(roomId).emit("update_players", { roomId, time });
         }
       });
     });

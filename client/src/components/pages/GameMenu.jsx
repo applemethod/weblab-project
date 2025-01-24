@@ -7,9 +7,10 @@ import ProfileIcon from "../modules/ProfileIcon";
 import { UserContext } from "../App";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { io } from "socket.io-client";
+import socketIOClient from "socket.io-client";
 
-const socket = io("https://geographyalphabetchain.onrender.com"); // Connect to the backend
+const endpoint = window.location.hostname + ":" + window.location.port;
+export const socket = socketIOClient(endpoint);
 
 const levels = ["Easy", "Medium", "Hard"];
 
@@ -28,15 +29,17 @@ const GameMenu = () => {
     if (!userId) return;
 
     // Join the room
-    socket.emit("join_room", {
-      roomId: gameId,
-      user: userId,
-    });
+    if (userId) {
+      socket.emit("join_room", {
+        roomId: gameId,
+        user: userId,
+      });
+    }
 
     // Listen for player updates
     socket.on("update_players", (room) => {
       if (room && room.players) {
-        setLeader(room.leader);
+        setLeader(room.leader); // Update the leader
         setPlayers(room.players); // Update the list of players
         setTime(room.settings.time); // Sync time
         setIncrement(room.settings.increment); // Sync increment
@@ -47,6 +50,7 @@ const GameMenu = () => {
     // Cleanup on component unmount
     return () => {
       socket.emit("leave_room", { roomId: gameId });
+      socket.emit("maintain_rooms", { roomId: gameId });
       socket.off("update_players");
     };
   }, [userId, gameId]);
